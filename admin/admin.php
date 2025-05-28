@@ -52,6 +52,8 @@ $schedules = $conn->query("
     <li><a href="packages.php">Quản lý Gói tập</a></li>
     <li><a href="payments.php">Quản lý Thanh toán</a></li>
     <li><a href="payments.php">Quản lý thanh toán</a></li>
+    <li><a href="../approve_pt.php">duyệt hồ sơ PT</a></li>
+    <li><a href="../admin_pt_approval.php">Admin duyệt gói tập </a></li>
 
   </ul>
 

@@ -18,14 +18,20 @@ $role = $_SESSION['role'] ?? null;
       <li><a href="./bmi/bmi.php">Tính BMI</a></li>
       <?php if ($isLoggedIn): ?>
         <?php if ($role === 'admin'): ?>
+           <li><a href="./auth/profile.php">Trang Cá NhânNhân</a></li>
           <li><a href="./admin/admin.php">Trang quản trị</a></li>
+          <li><a href="approve_pt.php">Duyệt PT</a></li>
+          <li><a href="approve_request.php">Duyệt gói tập</a></li>
           <li><a href="./admin/manage_schedule.php">Quản lý lịch tập</a></li>
           <li><a href="./auth/logout.php">Đăng xuất</a></li>
         <?php elseif ($role === 'pt'): ?>
-          <li><a href="./pt/profile.php">Trang PT</a></li>
+           <li><a href="./auth/profile.php">Trang Cá NhânNhân</a></li>
+          <li><a href="./trainer/trainers">Trang PT</a></li>
           <li><a href="./admin/manage_schedule.php">Quản lý lịch tập</a></li>
           <li><a href="./auth/logout.php">Đăng xuất</a></li>
         <?php else: /* Khách hàng (customer) */ ?>
+          <li><a href="request_package.php">Đăng ký gói tập</a></li>
+          <li><a href="./auth/profile.php">Trang Cá NhânNhân</a></li>
           <li><a href="./schedules/book_schedule.php">Đặt lịch tập</a></li>
           <li><a href="./pt/my_schedule.php">Lịch tập của tôi</a></li>
           <li><a href="./customer/add_payment.php">Thanh toán</a></li> <!-- ✅ Mục mới thêm -->
