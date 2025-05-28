@@ -41,6 +41,7 @@ $schedules = $conn->query("
 
   <h3>Chức năng quản lý</h3>
   <ul>
+    <li><a href="../members/members.php">Quản Lý Thành Viên</a></li>
     <li><a href="manage_accounts.php">Quản lý tài khoản</a></li>
     <li><a href="manage_schedule.php">Quản lý lịch tập</a></li>
     <li><a href="manage_pt_time.php">Thời gian dạy của PT</a></li>

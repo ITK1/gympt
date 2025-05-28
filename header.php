@@ -1,14 +1,13 @@
 <?php
-
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-
-
 $isLoggedIn = isset($_SESSION['user_id']);
 $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+$role = $_SESSION['role'] ?? null; // Thêm dòng này để tránh lỗi undefined variable
 ?>
+<link rel="stylesheet" href="./assets/style.css">
 <header class="main-header">
   <nav class="navbar">
     <div class="logo">
@@ -16,12 +15,13 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     </div>
     <ul class="nav-links">
       <li><a href="../index.php">Trang chủ</a></li>
-      <?php if (isset($_SESSION['user_id'])): ?>
-        <?php if ($_SESSION['role'] === 'admin'): ?>
+      <li><a href="./bmi/bmi.php">Tính BMI</a></li>
+      <?php if ($isLoggedIn): ?>
+        <?php if ($role === 'admin'): ?>
           <li><a href="admin/admin.php">Trang quản trị</a></li>
           <li><a href="admin/manage_schedule.php">Quản lý lịch tập</a></li>
           <li><a href="./auth/logout.php">Đăng xuất</a></li>
-        <?php elseif ($_SESSION['role'] === 'pt'): ?>
+        <?php elseif ($role === 'pt'): ?>
           <li><a href="pt/profile.php">Trang PT</a></li>
           <li><a href="admin/manage_schedule.php">Quản lý lịch tập</a></li>
           <li><a href="./auth/logout.php">Đăng xuất</a></li>
@@ -37,4 +37,3 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     </ul>
   </nav>
 </header>
-
