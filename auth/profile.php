@@ -80,6 +80,8 @@ $name = $_SESSION['name'];
 
     <?php elseif ($role === 'pt'): ?>
       <h3>Lịch dạy của bạn</h3>
+      <a href="chat_with_pt.php?pt_id=123">Chat với PT này</a>
+
       <?php
         $stmt = $conn->prepare("SELECT schedules.id, members.name AS member_name, date, time FROM schedules JOIN members ON schedules.member_id = members.id WHERE schedules.trainer_id = (SELECT id FROM trainers WHERE user_id=?) ORDER BY date, time");
         $stmt->bind_param("i", $user_id);
@@ -99,6 +101,7 @@ $name = $_SESSION['name'];
       </table>
 
     <?php else: ?>
+      <a href="../index.php"> Trang Chủ</a>
       <h3>Lịch tập của bạn</h3>
       <?php
         $stmt = $conn->prepare("SELECT schedules.id, trainers.name AS trainer_name, date, time FROM schedules JOIN trainers ON schedules.trainer_id = trainers.id WHERE schedules.member_id = (SELECT id FROM members WHERE user_id=?) ORDER BY date, time");

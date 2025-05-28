@@ -10,26 +10,45 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'pt']
 $user_id = $_SESSION['user_id'];
 $role = $_SESSION['role'];
 
-// Nếu PT thì chỉ xem lịch của mình
 if ($role === 'pt') {
-    $stmt = $conn->prepare("SELECT schedules.id, members.name AS member_name, date, time, status FROM schedules JOIN members ON schedules.member_id = members.id WHERE trainer_id = ? ORDER BY date, time");
+    $stmt = $conn->prepare("SELECT s.id, m.name AS member_name, s.date, s.time, s.status, p.payment_status 
+        FROM schedules s 
+        JOIN members m ON s.member_id = m.id 
+        LEFT JOIN payments p ON s.id = p.schedule_id 
+        WHERE s.trainer_id = ? 
+        ORDER BY s.date, s.time");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
 } else {
-    // Admin xem tất cả
-    $result = $conn->query("SELECT schedules.id, members.name AS member_name, trainers.name AS trainer_name, date, time, status FROM schedules JOIN members ON schedules.member_id = members.id JOIN trainers ON schedules.trainer_id = trainers.id ORDER BY date, time");
+    $result = $conn->query("SELECT s.id, m.name AS member_name, t.name AS trainer_name, s.date, s.time, s.status, p.payment_status 
+        FROM schedules s 
+        JOIN members m ON s.member_id = m.id 
+        JOIN trainers t ON s.trainer_id = t.id 
+        LEFT JOIN payments p ON s.id = p.schedule_id 
+        ORDER BY s.date, s.time");
 }
 
-// Xử lý duyệt hoặc từ chối
 if (isset($_GET['action']) && isset($_GET['id'])) {
     $id = intval($_GET['id']);
     $action = $_GET['action'];
     if (in_array($action, ['approve', 'reject'])) {
-        $new_status = $action === 'approve' ? 'approved' : 'rejected';
-        $stmt2 = $conn->prepare("UPDATE schedules SET status = ? WHERE id = ?");
-        $stmt2->bind_param("si", $new_status, $id);
-        $stmt2->execute();
+        // Kiểm tra payment đã thanh toán chưa
+        $stmtCheck = $conn->prepare("SELECT payment_status FROM payments WHERE schedule_id = ?");
+        $stmtCheck->bind_param("i", $id);
+        $stmtCheck->execute();
+        $resCheck = $stmtCheck->get_result();
+        $payment = $resCheck->fetch_assoc();
+
+        if ($payment && $payment['payment_status'] === 'paid') {
+            $new_status = $action === 'approve' ? 'approved' : 'rejected';
+            $stmt2 = $conn->prepare("UPDATE schedules SET status = ? WHERE id = ?");
+            $stmt2->bind_param("si", $new_status, $id);
+            $stmt2->execute();
+        } else {
+            // Chưa thanh toán, không cho duyệt
+            $_SESSION['msg'] = "Không thể duyệt lịch chưa thanh toán!";
+        }
         header("Location: manage_schedule.php");
         exit;
     }
@@ -47,6 +66,11 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
 
 <h2>Quản lý lịch tập</h2>
 
+<?php if (!empty($_SESSION['msg'])) {
+    echo "<p style='color:red;'>" . $_SESSION['msg'] . "</p>";
+    unset($_SESSION['msg']);
+} ?>
+
 <table border="1" cellpadding="5" cellspacing="0">
     <tr>
         <th>ID</th>
@@ -55,6 +79,7 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
         <th>Ngày</th>
         <th>Giờ</th>
         <th>Trạng thái</th>
+        <th>Thanh toán</th>
         <th>Hành động</th>
     </tr>
     <?php while ($row = $result->fetch_assoc()): ?>
@@ -74,9 +99,18 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
             ?>
         </td>
         <td>
-            <?php if ($row['status'] === 'pending'): ?>
+            <?php
+            if ($row['payment_status'] === 'paid') echo "<span style='color:green;'>Đã thanh toán</span>";
+            elseif ($row['payment_status'] === 'pending') echo "<span style='color:orange;'>Chưa thanh toán</span>";
+            else echo "Không có";
+            ?>
+        </td>
+        <td>
+            <?php if ($row['status'] === 'pending' && $row['payment_status'] === 'paid'): ?>
                 <a href="?action=approve&id=<?= $row['id'] ?>">Duyệt</a> | 
                 <a href="?action=reject&id=<?= $row['id'] ?>" onclick="return confirm('Bạn có chắc muốn từ chối?');">Từ chối</a>
+            <?php elseif ($row['status'] === 'pending' && $row['payment_status'] !== 'paid'): ?>
+                <span style="color:red;">Chờ thanh toán</span>
             <?php else: ?>
                 Không có
             <?php endif; ?>

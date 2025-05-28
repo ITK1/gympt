@@ -1,0 +1,21 @@
+#chat-box .message {
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+#chat-box .from-me {
+  background-color: #007bff;
+  color: white;
+  margin-left: auto;
+  text-align: right;
+}
+
+#chat-box .from-other {
+  background-color: #e2e3e5;
+  color: #212529;
+  margin-right: auto;
+  text-align: left;
+}

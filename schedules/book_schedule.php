@@ -8,24 +8,35 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'member') {
 }
 
 $user_id = $_SESSION['user_id'];
-
-// Lấy danh sách PT để chọn
 $trainers = $conn->query("SELECT id, name FROM trainers");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $trainer_id = intval($_POST['trainer_id']);
     $date = $_POST['date'];
     $time = $_POST['time'];
+    $amount = 500000; // ví dụ tiền cố định, bạn thay tùy theo gói
 
-    // Kiểm tra dữ liệu đơn giản
     if ($trainer_id && $date && $time) {
-        // Chèn vào schedules với trạng thái pending
-        $stmt = $conn->prepare("INSERT INTO schedules (member_id, trainer_id, date, time, status) VALUES (?, ?, ?, ?, 'pending')");
-        $stmt->bind_param("iiss", $user_id, $trainer_id, $date, $time);
-        if ($stmt->execute()) {
-            $message = "Đặt lịch thành công. Đang chờ duyệt.";
-        } else {
-            $error = "Lỗi khi đặt lịch.";
+        $conn->begin_transaction();
+        try {
+            // Thêm lịch với trạng thái pending
+            $stmt = $conn->prepare("INSERT INTO schedules (member_id, trainer_id, date, time, status) VALUES (?, ?, ?, ?, 'pending')");
+            $stmt->bind_param("iiss", $user_id, $trainer_id, $date, $time);
+            $stmt->execute();
+            $schedule_id = $stmt->insert_id;
+
+            // Tạo bản ghi payment trạng thái pending
+            $stmt2 = $conn->prepare("INSERT INTO payments (user_id, schedule_id, amount, payment_status) VALUES (?, ?, ?, 'pending')");
+            $stmt2->bind_param("iid", $user_id, $schedule_id, $amount);
+            $stmt2->execute();
+
+            $conn->commit();
+
+            header("Location: payment.php?schedule_id=$schedule_id&amount=$amount");
+            exit;
+        } catch (Exception $e) {
+            $conn->rollback();
+            $error = "Lỗi khi đặt lịch: " . $e->getMessage();
         }
     } else {
         $error = "Vui lòng điền đầy đủ thông tin.";
@@ -45,7 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <h2>Đặt lịch tập</h2>
 
-<?php if (isset($message)) echo "<p style='color:green;'>$message</p>"; ?>
 <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
 
 <form method="post">

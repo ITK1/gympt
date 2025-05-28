@@ -1,3 +1,19 @@
+
+<?php
+include 'visitor_log.php';  // Ghi log ngay khi khách vào trang
+session_start();
+// Ghi log lượt truy cập
+$logDir = __DIR__ . '/logs';
+if (!is_dir($logDir)) {
+    mkdir($logDir, 0777, true);
+}
+$logFile = $logDir . '/visitors.log';
+
+$ip = $_SERVER['REMOTE_ADDR'];
+$time = date('Y-m-d H:i:s');
+file_put_contents($logFile, "$time - $ip\n", FILE_APPEND);
+?>
+
 <?php
 require_once './includes/config.php';
 ?>
@@ -124,15 +140,21 @@ require_once './includes/config.php';
   <section class="features">
     <div class="feature">
       <h3>📅 Lịch tập cá nhân</h3>
+      <a href="./packages/packages.php">
       <p>Chọn ngày giờ phù hợp và nhận hướng dẫn từ PT.</p>
+      </a>
     </div>
     <div class="feature">
+      <a href="./exercises.php">
       <h3>💪 Gợi ý bài tập</h3>
       <p>Tham khảo các bài tập ngực, bụng, tay phù hợp thể trạng.</p>
+      </a>
     </div>
     <div class="feature">
+      <a href="./chat/chat.php">
       <h3>💬 Chat với PT</h3>
       <p>Trò chuyện trực tiếp với huấn luyện viên qua hệ thống.</p>
+      </a>
     </div>
   </section>
 
@@ -141,19 +163,19 @@ require_once './includes/config.php';
     <div class="trainers-list">
       <!-- Demo trainer cards tĩnh -->
       <div class="trainer-card">
-        <img src="hinhhinh" alt="Trainer 1" />
+        <img src="./img/anhmau.jpg" alt="Trainer 1" />
         <h4>Nguyễn Văn A</h4>
         <p>Chuyên môn: Tăng cơ, giảm mỡ</p>
         <p>Hơn 5 năm kinh nghiệm huấn luyện cá nhân.</p>
       </div>
       <div class="trainer-card">
-        <img src="hinhhinh" alt="Trainer 2" />
+        <img src="./img/anhmau2.jpg" alt="Trainer 2" />
         <h4>Trần Thị B</h4>
         <p>Chuyên môn: Yoga, phục hồi chấn thương</p>
         <p>Hỗ trợ khách hàng tập luyện đúng kỹ thuật.</p>
       </div>
       <div class="trainer-card">
-        <img src="hinh" alt="Trainer 3" />
+        <img src="./img/anhmau3.jpg" alt="Trainer 3" />
         <h4>Phạm Văn C</h4>
         <p>Chuyên môn: Cardio, thể hình</p>
         <p>Giúp tăng sức bền và cải thiện vóc dáng.</p>
