@@ -16,7 +16,7 @@ $name = $_SESSION['name'];
 <head>
   <meta charset="UTF-8">
   <title>Trang cá nhân - PT Gym</title>
-  <link rel="stylesheet" href="../assets/style.css"> <!-- Sử dụng file CSS chung nếu có -->
+  <link rel="stylesheet" href="../assets/style.css">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -76,54 +76,75 @@ $name = $_SESSION['name'];
 
     <?php if ($role === 'admin'): ?>
       <h3>🔧 Quản trị viên</h3>
+      <p><a href="../index.php">Trang chủ</a></p>
       <p><a href="manage_accounts.php">👥 Quản lý tài khoản PT & Khách</a></p>
       <p><a href="manage_schedule.php">📅 Quản lý lịch học</a></p>
       <p><a href="admin.php">📂 Duyệt đăng ký gói và PT</a></p>
 
     <?php elseif ($role === 'pt'): ?>
       <?php
-        // Lấy thông tin trainer
+        // Lấy thông tin trainer theo user_id
         $stmt = $conn->prepare("SELECT * FROM trainers WHERE user_id = ?");
         $stmt->bind_param("i", $user_id);
         $stmt->execute();
         $trainer = $stmt->get_result()->fetch_assoc();
       ?>
-      <h3>📋 Thông tin đăng ký PT</h3>
-      <a href="../index.php">trang chu</a>
-      <ul>
-        <li><strong>Họ tên:</strong> <?= htmlspecialchars($trainer['name']) ?></li>
-        <li><strong>Tuổi:</strong> <?= $trainer['age'] ?></li>
-        <li><strong>Kinh nghiệm:</strong> <?= nl2br(htmlspecialchars($trainer['experience'])) ?></li>
-        <li><strong>Hình thức dạy:</strong> <?= htmlspecialchars($trainer['teach_type']) ?></li>
-        <?php if (!empty($trainer['location'])): ?>
-          <li><strong>Địa điểm dạy:</strong> <?= htmlspecialchars($trainer['location']) ?></li>
-        <?php endif; ?>
-        <li><strong>Trạng thái phê duyệt:</strong> <span style="color: <?= $trainer['approval_status'] === 'approved' ? 'lightgreen' : 'yellow' ?>"><?= strtoupper($trainer['approval_status']) ?></span></li>
-        <?php if (!empty($trainer['cv_path'])): ?>
-          <li><a href="<?= $trainer['cv_path'] ?>" target="_blank">📄 Xem CV</a></li>
-        <?php endif; ?>
-      </ul>
 
-      <h3>📆 Lịch dạy</h3>
-      <?php
-        $stmt = $conn->prepare("SELECT schedules.id, members.name AS member_name, date, time FROM schedules JOIN members ON schedules.member_id = members.id WHERE schedules.trainer_id = ? ORDER BY date, time");
-        $stmt->bind_param("i", $trainer['id']);
-        $stmt->execute();
-        $result = $stmt->get_result();
-      ?>
-      <table>
-        <tr><th>ID</th><th>Thành viên</th><th>Ngày</th><th>Giờ</th></tr>
-        <?php while ($row = $result->fetch_assoc()): ?>
-          <tr>
-            <td><?= $row['id'] ?></td>
-            <td><?= htmlspecialchars($row['member_name']) ?></td>
-            <td><?= $row['date'] ?></td>
-            <td><?= $row['time'] ?></td>
-          </tr>
-        <?php endwhile; ?>
-      </table>
+      <?php if ($trainer): ?>
+        <h3>📋 Thông tin đăng ký PT</h3>
+        <a href="../index.php">🏠 Trang Chủ</a>
+        <ul>
+          <li><strong>Họ tên:</strong> <?= htmlspecialchars($trainer['name']) ?></li>
+          <li><strong>Tuổi:</strong> <?= (int)$trainer['age'] ?></li>
+          <li><strong>Kinh nghiệm:</strong> <?= nl2br(htmlspecialchars($trainer['experience'])) ?></li>
+          <li><strong>Hình thức dạy:</strong> <?= htmlspecialchars($trainer['teach_type']) ?></li>
+          <?php if (!empty($trainer['location'])): ?>
+            <li><strong>Địa điểm dạy:</strong> <?= htmlspecialchars($trainer['location']) ?></li>
+          <?php endif; ?>
+          <li><strong>Trạng thái phê duyệt:</strong> 
+            <span style="color: <?= $trainer['approval_status'] === 'approved' ? 'lightgreen' : 'yellow' ?>">
+              <?= strtoupper(htmlspecialchars($trainer['approval_status'])) ?>
+            </span>
+          </li>
+          <?php if (!empty($trainer['cv_path'])): ?>
+            <li><a href="<?= htmlspecialchars($trainer['cv_path']) ?>" target="_blank">📄 Xem CV</a></li>
+          <?php endif; ?>
+        </ul>
 
-    <?php else: ?>
+        <h3>📆 Lịch dạy</h3>
+        <?php
+          $stmt = $conn->prepare("
+            SELECT schedules.id, members.name AS member_name, date, time 
+            FROM schedules 
+            JOIN members ON schedules.member_id = members.id 
+            WHERE schedules.trainer_id = ? 
+            ORDER BY date, time
+          ");
+          $stmt->bind_param("i", $trainer['id']);
+          $stmt->execute();
+          $result = $stmt->get_result();
+        ?>
+        <?php if ($result->num_rows > 0): ?>
+        <table>
+          <tr><th>ID</th><th>Thành viên</th><th>Ngày</th><th>Giờ</th></tr>
+          <?php while ($row = $result->fetch_assoc()): ?>
+            <tr>
+              <td><?= $row['id'] ?></td>
+              <td><?= htmlspecialchars($row['member_name']) ?></td>
+              <td><?= htmlspecialchars($row['date']) ?></td>
+              <td><?= htmlspecialchars($row['time']) ?></td>
+            </tr>
+          <?php endwhile; ?>
+        </table>
+        <?php else: ?>
+          <p>Chưa có lịch dạy nào.</p>
+        <?php endif; ?>
+
+      <?php else: ?>
+        <p>Không tìm thấy thông tin huấn luyện viên.</p>
+      <?php endif; ?>
+
+    <?php else: // member ?>
       <a href="../index.php">🏠 Trang Chủ</a>
       <h3>📦 Gói đã đăng ký</h3>
       <?php
@@ -131,28 +152,48 @@ $name = $_SESSION['name'];
         $stmt->bind_param("i", $user_id);
         $stmt->execute();
         $member = $stmt->get_result()->fetch_assoc();
-        echo "<p><strong>Gói:</strong> " . htmlspecialchars($member['package']) . "</p>";
-        echo "<p><strong>Trạng thái thanh toán:</strong> " . ($member['payment_status'] === 'paid' ? "<span style='color:lightgreen'>ĐÃ THANH TOÁN</span>" : "<span style='color:orange'>CHƯA THANH TOÁN</span>") . "</p>";
+
+        if ($member) {
+            echo "<p><strong>Gói:</strong> " . htmlspecialchars($member['package']) . "</p>";
+            echo "<p><strong>Trạng thái thanh toán:</strong> " . 
+                ($member['payment_status'] === 'paid' 
+                  ? "<span style='color:lightgreen'>ĐÃ THANH TOÁN</span>" 
+                  : "<span style='color:orange'>CHƯA THANH TOÁN</span>") . 
+                "</p>";
+        } else {
+            echo "<p>Chưa đăng ký gói hoặc không tìm thấy thông tin.</p>";
+        }
       ?>
 
       <h3>📆 Lịch học</h3>
       <?php
-        $stmt = $conn->prepare("SELECT schedules.id, trainers.name AS trainer_name, date, time FROM schedules JOIN trainers ON schedules.trainer_id = trainers.id WHERE schedules.member_id = (SELECT id FROM members WHERE user_id = ?) ORDER BY date, time");
+        $stmt = $conn->prepare("
+          SELECT schedules.id, trainers.name AS trainer_name, date, time 
+          FROM schedules 
+          JOIN trainers ON schedules.trainer_id = trainers.id 
+          WHERE schedules.member_id = (SELECT id FROM members WHERE user_id = ?) 
+          ORDER BY date, time
+        ");
         $stmt->bind_param("i", $user_id);
         $stmt->execute();
         $result = $stmt->get_result();
       ?>
+
+      <?php if ($result->num_rows > 0): ?>
       <table>
         <tr><th>ID</th><th>Huấn luyện viên</th><th>Ngày</th><th>Giờ</th></tr>
         <?php while ($row = $result->fetch_assoc()): ?>
           <tr>
             <td><?= $row['id'] ?></td>
             <td><?= htmlspecialchars($row['trainer_name']) ?></td>
-            <td><?= $row['date'] ?></td>
-            <td><?= $row['time'] ?></td>
+            <td><?= htmlspecialchars($row['date']) ?></td>
+            <td><?= htmlspecialchars($row['time']) ?></td>
           </tr>
         <?php endwhile; ?>
       </table>
+      <?php else: ?>
+        <p>Chưa có lịch học nào.</p>
+      <?php endif; ?>
     <?php endif; ?>
   </div>
 </body>

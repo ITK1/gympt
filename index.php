@@ -128,6 +128,7 @@ require_once './includes/config.php';
   </style>
 </head>
 <body>
+  
   <?php require_once './header.php'; ?>
   <section class="hero">
     <div class="hero-content">
@@ -140,7 +141,7 @@ require_once './includes/config.php';
   <section class="features">
     <div class="feature">
       <h3>📅 Lịch tập cá nhân</h3>
-      <a href="./packages/packages.php">
+      <a href="./schedules/book_schedule.php">
       <p>Chọn ngày giờ phù hợp và nhận hướng dẫn từ PT.</p>
       </a>
     </div>

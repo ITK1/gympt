@@ -9,6 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $res = $conn->query("SELECT * FROM users WHERE email='$email'");
     if ($res->num_rows === 1) {
         $user = $res->fetch_assoc();
+
+        // ✅ Kiểm tra xác minh email
+        // if ($user['verified'] != 1) {
+        //     $error = "Tài khoản chưa được xác minh. Vui lòng kiểm tra email.";
+        // } 
+        // else
         if (password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
