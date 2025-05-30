@@ -161,8 +161,8 @@ $schedules = $conn->query("
     <li><a href="/manage_pt_time.php">🕒 Thời gian làm việc của PT</a></li>
     <li><a href="../packages/packages.php">📦 Quản lý Gói tập</a></li>
     <li><a href="../payments/payments.php">💰 Quản lý Thanh toán</a></li>
-    <li><a href="/approve_pt.php">📝 Duyệt hồ sơ PT</a></li>
-    <li><a href="../admin_pt_approval.php">✅ Duyệt gói tập khách</a></li>
+    <li><a href="./approve_pt.php">📝 Duyệt hồ sơ PT</a></li>
+    <li><a href="./admin_pt_approval.php">✅ Duyệt gói tập khách</a></li>
   </ul>
 
   <h3>📌 5 lịch tập gần nhất</h3>
