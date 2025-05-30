@@ -32,13 +32,19 @@ require_once './includes/config.php';
 <body>
   
   <?php require_once './header.php'; ?>
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Chào mừng đến với <span class="highlight">PT GYM</span></h1>
-      <p>Giúp bạn đạt mục tiêu: giảm cân, tăng cơ, cải thiện sức khỏe</p>
-      <a href="./packages/packages.php" class="cta-button">Đăng ký gói tập ngay</a>
-    </div>
-  </section>
+ <section class="hero">
+  <video autoplay muted loop playsinline class="bg-video">
+    <source src="./assets/gym.mp4" type="video/mp4" >
+    Trình duyệt của bạn không hỗ trợ video nền.
+  </video>
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <h1>Chào mừng đến với <span class="highlight">PT GYM</span></h1>
+    <p>Giúp bạn đạt mục tiêu: giảm cân, tăng cơ, cải thiện sức khỏe</p>
+    <a href="./packages/packages.php" class="cta-button">Đăng ký gói tập ngay</a>
+  </div>
+</section>
+
 
   <section class="features">
     <div class="feature">
