@@ -31,7 +31,7 @@ require_once './includes/config.php';
     <link rel="stylesheet" href="/assets/styles-extra.css" />
 <script src="./assets/styles-extra.css"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r148/three.min.js"></script>
-<canvas id="dumbbellCanvas"></canvas>
+
 
     
 
@@ -39,7 +39,7 @@ require_once './includes/config.php';
   
 </head>
 <body>
-  
+  <canvas id="dumbbellCanvas"></canvas>
   <?php require_once './header.php'; ?>
   
 
