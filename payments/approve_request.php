@@ -1,5 +1,5 @@
 <?php
-require './includes/config.php';
+require '../includes/config.php';
 
 // Lấy ID từ GET và kiểm tra hợp lệ
 $id = intval($_GET['id'] ?? 0);
@@ -17,7 +17,7 @@ if ($stmt->execute()) {
     // ✅ Sau khi duyệt có thể gọi API tạo mã QR Momo tại đây
 
     // Quay về trang danh sách admin
-    header("Location: admin_package_requests.php");
+    header("Location: ./admin/admin_package_requests.php");
     exit;
 } else {
     echo "❌ Lỗi khi duyệt yêu cầu: " . $conn->error;

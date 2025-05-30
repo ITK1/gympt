@@ -1,11 +1,29 @@
 <?php
 require_once '../includes/config.php';
 session_start();
-
+require_once 'check_payment_status.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
+
+if (isset($_SESSION['user_role'])) {
+    $userId = $_SESSION['user_id'];
+    $user = $conn->query("SELECT * FROM users WHERE id = $userId")->fetch_assoc();
+
+    if ($user['status'] === 'expired') {
+        echo "<div class='alert'>
+                <strong>Tài khoản của bạn đã hết hạn.</strong> Vui lòng đóng phí để tiếp tục sử dụng dịch vụ.
+                <a href='/payments/pay_renewal.php'>Thanh toán ngay</a>
+              </div>";
+    } elseif ($user['status'] === 'banned') {
+        echo "<div class='alert'>
+                <strong>Tài khoản của bạn đã bị khóa.</strong> Liên hệ admin để mở lại.
+              </div>";
+        exit;
+    }
+}
+
 
 $user_id = $_SESSION['user_id'];
 $role = $_SESSION['role'];
@@ -81,6 +99,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 ?>
 
+
 <?php if ($result->num_rows > 0): ?>
   <ul>
     <?php while ($row = $result->fetch_assoc()): ?>
@@ -93,6 +112,7 @@ $result = $stmt->get_result();
 <?php else: ?>
   <p>Không có thông báo nào.</p>
 <?php endif; ?>
+
 
 
     <?php if ($role === 'admin'): ?>

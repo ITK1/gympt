@@ -1,8 +1,15 @@
 <?php
 require_once '../includes/config.php';
 
-$id = intval($_GET['id']);
+// Lấy và kiểm tra dữ liệu GET
+$id = intval($_GET['id'] ?? 0);
 $email = $_GET['email'] ?? '';
+
+if ($id <= 0 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo "❌ Thiếu hoặc sai thông tin ID/email.";
+    echo '<br><a href="packages.php">← Quay lại</a>';
+    exit;
+}
 
 if ($id && $email) {
     // Lấy thông tin yêu cầu
@@ -33,4 +40,4 @@ if ($id && $email) {
     }
 }
 ?>
-<a href="packages.php">← Quay lại</a>
+    <a href="/packages/packages.php"><- quay lai</a>

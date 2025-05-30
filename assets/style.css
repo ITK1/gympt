@@ -278,4 +278,20 @@
       color: white;
       margin-top: 40px;
     }
-  
+    /* Animation chữ glow nhẹ */
+  @keyframes glowEffect {
+    0%, 100% {
+      text-shadow: 0 0 5px #f48c06, 0 0 10px #f48c06;
+      color: #f48c06;
+    }
+    50% {
+      text-shadow: 0 0 20px #ff6f00, 0 0 30px #ff6f00;
+      color: #ff6f00;
+    }
+  }
+
+  /* Animation lên xuống cho icon tạ */
+  @keyframes floatUpDown {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }

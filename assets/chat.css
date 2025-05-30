@@ -19,3 +19,44 @@
   margin-right: auto;
   text-align: left;
 }
+/* css2 */
+ /* Gradient động cho nút CTA */
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .cta-button {
+    background: linear-gradient(270deg, #ff4c60, #ff8a00, #f48c06);
+    background-size: 600% 600%;
+    animation: gradientBG 8s ease infinite;
+    box-shadow: 0 8px 15px rgba(255, 76, 96, 0.5);
+  }
+
+  /* Shadow glow di chuyển khi hover trainer-card */
+  .trainer-card:hover {
+    box-shadow: 0 0 15px 5px #f48c06;
+    transition: box-shadow 0.4s ease;
+  }
+
+  /* Scroll reveal ẩn ban đầu */
+  .feature, .trainer-card {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  /* Khi reveal thì hiện */
+  .reveal-active {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+
+  /* Particle background cho hero */
+  #particle-canvas {
+    position: absolute;
+    top:0; left:0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }

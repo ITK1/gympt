@@ -2,6 +2,8 @@
 <?php
 include 'visitor_log.php';  // Ghi log ngay khi khách vào trang
 session_start();
+require_once './auth/check_payment_status.php';
+
 // Ghi log lượt truy cập
 $logDir = __DIR__ . '/logs';
 if (!is_dir($logDir)) {
@@ -26,12 +28,27 @@ require_once './includes/config.php';
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/style.css">
     <script src="/assets/gym-effects.js"></script>
+    <link rel="stylesheet" href="/assets/styles-extra.css" />
+<script src="./assets/styles-extra.css"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r148/three.min.js"></script>
+<canvas id="dumbbellCanvas"></canvas>
+
+    
+
 
   
 </head>
 <body>
   
   <?php require_once './header.php'; ?>
+  
+
+  <?php if (!empty($_SESSION['payment_warning'])): ?>
+<div class="payment-warning" style="background: #ffdddd; color: #a00; padding: 10px; text-align: center;">
+  <?= $_SESSION['payment_warning'] ?>
+</div>
+<?php endif; ?>
+
  <section class="hero">
   <video autoplay muted loop playsinline class="bg-video">
     <source src="./assets/gym.mp4" type="video/mp4" >
@@ -107,9 +124,8 @@ require_once './includes/config.php';
     <?php endwhile; ?>
   </div>
 </section> -->
+<!-- Particle canvas for hero -->
 
-  <footer>
-    <p>© 2025 PT GYM. All rights reserved.</p>
-  </footer>
+  
 </body>
 </html>

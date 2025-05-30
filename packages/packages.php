@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_package']) && $is
     $stmt = $conn->prepare("INSERT INTO packages (name, duration, price) VALUES (?, ?, ?)");
     $stmt->bind_param("sid", $name, $duration, $price);
     $stmt->execute();
-    header("Location: packages.php");
+    header("Location: /packages.php");
     exit;
 }
 
