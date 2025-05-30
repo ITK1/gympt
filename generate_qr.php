@@ -37,7 +37,7 @@ $momoPayUrl = "momo://pay?partnerCode=$partnerCode&requestId=$requestId&amount=$
 $qrImage = Builder::create()
     ->data($momoPayUrl)
     ->encoding(new Encoding('UTF-8'))
-    ->errorCorrectionLevel(new ErrorCorrectionLevelLow())
+    ->errorCorrectionLevel(new ErrorCorrectionLevelLow())//lỗilỗi
     ->size(300)
     ->margin(10)
     ->build();
