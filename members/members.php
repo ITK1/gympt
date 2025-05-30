@@ -1,6 +1,6 @@
 <?php
 require_once '../includes/config.php';
-include 'header.php';
+require_once '../header.php';
 $result = $conn->query("SELECT * FROM members");
 ?>
 <!DOCTYPE html>
@@ -8,7 +8,7 @@ $result = $conn->query("SELECT * FROM members");
 <head>
   <meta charset="UTF-8">
   <title>Danh sách thành viên</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="/assets/style.css">
   <style>
     body {
       background: url('../assets/gym-bg.jpg') no-repeat center center fixed;

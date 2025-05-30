@@ -3,10 +3,11 @@ session_start();
 require_once '../includes/config.php';
 
 // Kiểm tra user đã đăng nhập và là member
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'member') {
-    header('Location: ../auth/login.php');
-    exit;
-}
+// Cho phép các role member, pt, admin đều được truy cập
+// if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['member', 'pt', 'admin'])) {
+//     header('Location: ../auth/login.php');
+//     exit;
+// }
 
 $user_id = $_SESSION['user_id'];
 
@@ -36,8 +37,8 @@ if (!$chat_user) {
   <meta charset="UTF-8" />
   <title>Chat với <?= htmlspecialchars($chat_user['name']) ?></title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="./css/chat.css" />
-  <link rel="stylesheet" href="./assets/style.css">
+  <link rel="stylesheet" href="../css/chat.css" />
+  <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
 <?php include '../header.php'; ?>
@@ -57,6 +58,6 @@ if (!$chat_user) {
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/chat.js"></script>
+<script src="../js/chat.js"></script>
 </body>
 </html>

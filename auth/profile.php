@@ -73,6 +73,27 @@ $name = $_SESSION['name'];
 <body>
   <div class="container">
     <h2>Xin chào, <?= htmlspecialchars($name) ?> (<?= htmlspecialchars($role) ?>)</h2>
+    <h3>🔔 Thông báo</h3>
+<?php
+$stmt = $conn->prepare("SELECT message, created_at FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 5");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+?>
+
+<?php if ($result->num_rows > 0): ?>
+  <ul>
+    <?php while ($row = $result->fetch_assoc()): ?>
+      <li>
+        <strong><?= date('d/m/Y H:i', strtotime($row['created_at'])) ?>:</strong> 
+        <?= htmlspecialchars($row['message']) ?>
+      </li>
+    <?php endwhile; ?>
+  </ul>
+<?php else: ?>
+  <p>Không có thông báo nào.</p>
+<?php endif; ?>
+
 
     <?php if ($role === 'admin'): ?>
       <h3>🔧 Quản trị viên</h3>
@@ -195,6 +216,7 @@ $name = $_SESSION['name'];
         <p>Chưa có lịch học nào.</p>
       <?php endif; ?>
     <?php endif; ?>
+    
   </div>
 </body>
 </html>

@@ -2,27 +2,23 @@
 require_once '../includes/config.php';
 session_start();
 
-// Kiểm tra đăng nhập và phân quyền admin
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
     exit;
 }
 
 $role = strtolower($_SESSION['role'] ?? '');
-
 if ($role == 'pt,member') {
     header("Location: ../index.php");
     exit;
 }
 
-// Xử lý thêm thời gian dạy PT mới
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_pt_time'])) {
     $trainer_id = intval($_POST['trainer_id']);
     $date = $_POST['date'];
     $start_time = $_POST['start_time'];
     $end_time = $_POST['end_time'];
 
-    // Validate đơn giản
     if ($trainer_id > 0 && $date && $start_time && $end_time) {
         $stmt = $conn->prepare("INSERT INTO pt_times (trainer_id, date, start_time, end_time) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("isss", $trainer_id, $date, $start_time, $end_time);
@@ -38,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_pt_time'])) {
     }
 }
 
-// Xử lý xóa thời gian dạy
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     if ($id > 0) {
@@ -51,7 +46,6 @@ if (isset($_GET['delete'])) {
     }
 }
 
-// Lấy danh sách thời gian dạy PT
 $result = $conn->query("
     SELECT pt_times.id, trainers.name AS trainer_name, pt_times.date, pt_times.start_time, pt_times.end_time 
     FROM pt_times
@@ -59,9 +53,7 @@ $result = $conn->query("
     ORDER BY pt_times.date DESC, pt_times.start_time DESC
 ");
 
-// Lấy danh sách PT để chọn
 $trainers = $conn->query("SELECT id, name FROM trainers ORDER BY name");
-
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -135,17 +127,21 @@ $trainers = $conn->query("SELECT id, name FROM trainers ORDER BY name");
         }
         .message {
             margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 4px;
+            padding: 12px;
+            border-radius: 6px;
             font-weight: bold;
+            border-left: 6px solid;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
         }
         .message.success {
             background: #2a7a2a;
             color: #d4f8d4;
+            border-color: #4caf50;
         }
         .message.error {
             background: #a83232;
             color: #f8d4d4;
+            border-color: #ff4c4c;
         }
     </style>
 </head>
@@ -157,8 +153,9 @@ $trainers = $conn->query("SELECT id, name FROM trainers ORDER BY name");
     <?php if (isset($_GET['msg'])): ?>
         <div class="message success">
             <?php
-            if ($_GET['msg'] === 'added') echo "Thêm thời gian dạy thành công.";
-            elseif ($_GET['msg'] === 'deleted') echo "Xóa thời gian dạy thành công.";
+            if ($_GET['msg'] === 'added') echo "✅ Thêm thời gian dạy thành công.";
+            elseif ($_GET['msg'] === 'deleted') echo "🗑️ Xóa thời gian dạy thành công.";
+            elseif ($_GET['msg'] === 'updated') echo "✏️ Cập nhật thời gian dạy thành công.";
             ?>
         </div>
     <?php endif; ?>
@@ -224,4 +221,3 @@ $trainers = $conn->query("SELECT id, name FROM trainers ORDER BY name");
 </main>
 </body>
 </html>
-                

@@ -11,16 +11,16 @@ $role = $_SESSION['role'] ?? null;
 <header class="main-header">
   <nav class="navbar">
     <div class="logo">
-      <a href="index.php">🏋️‍♂️ PT GYM</a>
+      <a href="../index.php">🏋️‍♂️ PT GYM</a>
     </div>
     <ul class="nav-links">
       <li><a href="../index.php">Trang chủ</a></li>
       <li><a href="./bmi/bmi.php">Tính BMI</a></li>
       <?php if ($isLoggedIn): ?>
         <?php if ($role === 'admin'): ?>
-           <li><a href="./auth/profile.php">Trang Cá NhânNhân</a></li>
-          <li><a href="./admin/admin.php">Trang quản trị</a></li>
-          <li><a href="approve_pt.php">Duyệt PT</a></li>
+           <li><a href="./auth/profile.php">Trang Cá Nhân Nhân</a></li>
+          <li><a href="/admin/admin.php">Trang quản trị</a></li>
+          <li><a href="./approve.php">Duyệt PT</a></li>
           <li><a href="approve_request.php">Duyệt gói tập</a></li>
           <li><a href="./admin/manage_schedule.php">Quản lý lịch tập</a></li>
           <li><a href="./auth/logout.php">Đăng xuất</a></li>

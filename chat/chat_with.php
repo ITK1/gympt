@@ -3,7 +3,8 @@ session_start();
 require_once '../includes/config.php';
 
 // Kiểm tra nếu chưa đăng nhập hoặc không phải member thì chuyển về trang đăng nhập
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'member') {
+// Cho phép các role member, pt, admin đều được truy cập
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['member', 'pt', 'admin'])) {
     header('Location: ../auth/login.php');
     exit;
 }

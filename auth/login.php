@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['name'] = $user['name'];
-            header("Location: profile.php");
+            header("Location: ../index.php");
             exit;
         } else {
             $error = "Sai mật khẩu!";
