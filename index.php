@@ -39,7 +39,7 @@ require_once './includes/config.php';
   
 </head>
 <body>
-  <canvas id="dumbbellCanvas"></canvas>
+  
   <?php require_once './header.php'; ?>
   
 

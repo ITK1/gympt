@@ -1,8 +1,11 @@
+<?php require_once '../header.php';?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
+  
   <title>Kết quả BMI & TDEE</title>
+  <link rel="stylesheet" href="../assets/styles-extra.css">
   <style>
     body {
       margin: 0;

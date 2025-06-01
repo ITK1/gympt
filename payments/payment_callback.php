@@ -1,25 +1,33 @@
 <?php
 require_once '../includes/config.php';
 
-// Ví dụ giả lập nhận POST từ ví điện tử
-$schedule_id = intval($_POST['schedule_id'] ?? 0);
-$transaction_id = $_POST['transaction_id'] ?? null;
-$status = $_POST['status'] ?? null; // ví dụ 'success' hoặc 'failed'
-
-if ($schedule_id && $transaction_id && $status === 'success') {
-    // Cập nhật trạng thái thanh toán thành 'paid'
-    $stmt = $conn->prepare("UPDATE payments SET payment_status='paid', transaction_id=?, payment_date=NOW() WHERE schedule_id=?");
-    $stmt->bind_param("si", $transaction_id, $schedule_id);
-    $stmt->execute();
-
-    // Bạn có thể tự động duyệt lịch hoặc để admin duyệt
-    // $stmt2 = $conn->prepare("UPDATE schedules SET status='approved' WHERE id=?");
-    // $stmt2->bind_param("i", $schedule_id);
-    // $stmt2->execute();
-
-    http_response_code(200);
-    echo "OK";
-} else {
+$data = json_decode(file_get_contents("php://input"), true);
+if (!$data || $data['resultCode'] != 0) {
     http_response_code(400);
-    echo "Invalid request";
+    exit("Thanh toán không thành công.");
 }
+
+$orderInfo = $data['orderInfo'] ?? '';
+preg_match('/user (\d+)/', $orderInfo, $matches);
+$userId = intval($matches[1] ?? 0);
+
+if (!$userId) {
+    exit("Không tìm thấy user.");
+}
+
+// Xác định loại giao dịch
+$type = str_contains($orderInfo, 'Đăng ký PT') ? 'pt_register' : 'renew';
+
+if ($type === 'pt_register') {
+    // Cập nhật trạng thái trainer sang 'pending_payment_done'
+    $conn->query("UPDATE trainers SET payment_status = 'done' WHERE user_id = $userId");
+} else {
+    // Gia hạn tài khoản user
+    $conn->query("UPDATE users SET status = 'active' WHERE id = $userId");
+}
+
+// Lưu giao dịch nếu cần
+$conn->query("INSERT INTO payments (user_id, order_id, amount, status) VALUES ($userId, '{$data['orderId']}', {$data['amount']}, 'success')");
+
+echo "OK";
+?>

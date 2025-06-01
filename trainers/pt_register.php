@@ -25,6 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->bind_param("sissss", $name, $age, $experience, $teach_type, $location, $cv);
     $stmt->execute();
     $stmt->close();
+    
+header("Location: ../payments/create_momo_qr.php?type=pt_register&user_id=$userId");
+exit;
 
     echo "<script>alert('Đăng ký thành công. Vui lòng liên hệ admin và chờ duyệt.'); window.location.href='profile.php';</script>";
     exit();
